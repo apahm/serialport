@@ -10,7 +10,7 @@
 #ifndef __BASEDEVICE_H
 #define __BASEDEVICE_H
 
-#include <crosslib.h>
+#include "crosslib.h"
 
 //-----------------------------------------------------------------------------
 // Standart OS errors formatting

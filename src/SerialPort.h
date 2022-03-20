@@ -11,7 +11,7 @@
 #ifndef __SERIALPORT_H
 #define __SERIALPORT_H
 
-#include <BaseDevice.h>
+#include "BaseDevice.h"
 
 //-----------------------------------------------------------------------------
 // OS depended includes

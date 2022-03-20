@@ -243,9 +243,11 @@ bool QPRangeDevice::activate(const QString &a)
 
     dev = new CSerialPort();
     if(dev->ConnectA(a.toLatin1().data())) {
+        dev->setBaudrate(9600);
         emit activated();
         return true;
     }
+    
     delete dev;  dev = NULL;
 
 #if defined (_WIN32)
@@ -530,73 +532,6 @@ bool QPRangeDevice::readMemoryPortion(unsigned char addr, unsigned int offset, u
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-bool QPRangeDevice::writeMemory(unsigned char addr, const CFlashData &data)
-{
-    unsigned int mem_addr = data.address();
-    unsigned int mem_cnt = 0;
-    unsigned char por_len;
-    unsigned char ptr[128];
-    if(mem_addr % 128) {
-        por_len = std::min((unsigned int)(127 - (addr & 127)), data.size());
-        for(int  i = 0; i < por_len; i++) ptr[i] = data.data[mem_cnt + i];
-        if(!writeMemoryPortion(addr, mem_addr, por_len, ptr)) {
-            emit memoryProcess(0);
-            return false;
-        }
-        mem_cnt += por_len;
-        mem_addr += por_len;
-        emit memoryProcess(mem_cnt * 100 / data.size());
-    }
-
-    while(mem_cnt < data.size()) {
-        por_len = std::min(128U, data.size() - mem_cnt);
-        for(int  i = 0; i < por_len; i++) ptr[i] = data.data[mem_cnt + i];
-        if(!writeMemoryPortion(addr, mem_addr, por_len, ptr)) {
-            emit memoryProcess(0);
-            return false;
-        }
-        mem_cnt += por_len;
-        mem_addr += por_len;
-        emit memoryProcess(mem_cnt * 100 / data.size());
-    }
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-bool QPRangeDevice::readMemory(unsigned char addr, unsigned int offset, unsigned int length, CFlashData &data)
-{
-    unsigned int mem_addr = offset;
-    unsigned int mem_cnt = 0;
-    unsigned char por_len;
-    unsigned char ptr[128];
-    if(mem_addr % 128) {
-        por_len = std::min((unsigned int)(127 - (addr & 127)), length);
-        if(!readMemoryPortion(addr, mem_addr, por_len, ptr)) {
-            emit memoryProcess(0);
-            return false;
-        }
-        for(int i = 0; i < por_len; i++) data.data.push_back(ptr[i]);
-        mem_cnt += por_len;
-        mem_addr += por_len;
-        emit memoryProcess(mem_cnt * 100 / length);
-    }
-
-    while(mem_cnt < length) {
-        por_len = std::min(128U, length - mem_cnt);
-        if(!readMemoryPortion(addr, mem_addr, por_len, ptr)) {
-            emit memoryProcess(0);
-            return false;
-        }
-        for(int i = 0; i < por_len; i++) data.data.push_back(ptr[i]);
-        mem_cnt += por_len;
-        mem_addr += por_len;
-        emit memoryProcess(mem_cnt * 100 / length);
-    }
-    data.setAddress(offset);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

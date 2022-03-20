@@ -2,7 +2,7 @@
 #define QPRANGEMODULE_H
 
 #include <QObject>
-#include <SerialPort.h>
+#include "SerialPort.h"
 
 // Protocol
 #define PRANGE_PRINT_LENGTH     16
@@ -162,14 +162,14 @@ class QPRangeDevice: public QObject
     Q_OBJECT
 
 protected:
-    CBaseDevice * dev;
+    CBaseSerialPort* dev;
 
     bool FSimulation;
     unsigned int FTimeout;
 
     unsigned short makeCRC16(unsigned char * data, unsigned short len, bool check = false) const;
-    int sendData(void * data, int length = -1);
-    int recvData(void * data, int length);
+    //int sendData(void * data, int length = -1);
+    //int recvData(void * data, int length);
 
     int sendSim(unsigned char * data, int length);
     int recvSim(unsigned char * data, int length);
@@ -177,6 +177,9 @@ protected:
     int extendedSendRecvData(unsigned char *src, int src_len, unsigned char *dst, int dst_len);
 
 public:
+    
+    int sendData(void* data, int length = -1);
+    int recvData(void* data, int length);
     explicit QPRangeDevice(QObject *parent = 0);
     ~QPRangeDevice();
 
@@ -196,9 +199,6 @@ public:
 
     bool writeMemoryPortion(unsigned char addr, unsigned int offset, unsigned char length, const void * data);
     bool readMemoryPortion(unsigned char addr, unsigned int offset, unsigned char length, void * data);
-
-    bool writeMemory(unsigned char addr, const CFlashData &data);
-    bool readMemory(unsigned char addr, unsigned int offset, unsigned int length, CFlashData &data);
 
     bool getVersion(unsigned char addr, unsigned char * minor, unsigned char * major);
 

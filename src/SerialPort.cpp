@@ -8,7 +8,7 @@
 //**   Last modified: 27-04-2017                                           **
 //***************************************************************************
 
-#include <SerialPort.h>
+#include "SerialPort.h"
 
 //-----------------------------------------------------------------------------
 //************************ Start CBaseSerialPort ******************************
@@ -23,7 +23,7 @@ CBaseSerialPort::CBaseSerialPort(): CBaseDevice("CBaseSerialPort")
 
 	memset(&FParameters, 0, sizeof(SERIAL_PORT_PARAMETERS));
 	FParameters.uSize = sizeof(SERIAL_PORT_PARAMETERS);
-	FParameters.uBaudRate = 115200;
+	FParameters.uBaudRate = 9600;
 	//FParameters.ucParity = 0;
 	FParameters.ucDataBits = 8;
 	//FParameters.ucStopBits = 0;

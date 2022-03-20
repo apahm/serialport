@@ -7,7 +7,7 @@
 //**   Last modified: 27-04-2017                                           **
 //***************************************************************************
 
-#include <BaseDevice.h>
+#include "BaseDevice.h"
 
 #if defined (_WIN32)
 #   include <windows.h>
@@ -142,7 +142,7 @@ int CBaseDevice::readDataTimeout(void * dst, unsigned int length, unsigned int m
 		cr = GetTickCount();
 	} while ((en > cr) && ((unsigned int)rcv_length < length));
 
-	return readData(dst, std::min((unsigned int)rcv_length, length));
+	return readData(dst, min((unsigned int)rcv_length, length));
 }
 
 //-----------------------------------------------------------------------------
