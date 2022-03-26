@@ -11,8 +11,8 @@ int test_min_length(QPRangeDevice& prange)
 
     cmd[0] = 0x01;
     cmd[1] = 4;
-    cmd[2] = PRANGE_CMD_SETWORKMODE;
-    cmd[3] = PRANGE_BROADCAST;
+    cmd[2] = 0x21;
+    cmd[3] = 0x22;
     cmd[4] = 0x56;
     cmd[5] = 0x96;
     cmd[6] = 0xFF;
@@ -37,8 +37,8 @@ int test_min_normal_length(QPRangeDevice &prange)
 
     cmd[0] = 0x01;
     cmd[1] = 10;
-    cmd[2] = PRANGE_CMD_SETWORKMODE;
-    cmd[3] = PRANGE_BROADCAST;
+    cmd[2] = 0x21;
+    cmd[3] = 0x22;
     cmd[4] = 0x56;
     cmd[5] = 0x96;
     cmd[6] = 0xFF;
@@ -63,8 +63,8 @@ int test_normal_length(QPRangeDevice& prange)
 
     cmd[0] = 0x01;
     cmd[1] = 12;
-    cmd[2] = PRANGE_CMD_SETWORKMODE;
-    cmd[3] = PRANGE_BROADCAST;
+    cmd[2] = 0x21;
+    cmd[3] = 0x22;
     cmd[4] = 0x56;
     cmd[5] = 0x96;
     cmd[6] = 0xFF;
@@ -89,8 +89,8 @@ int test_large_normal_length(QPRangeDevice& prange)
 
     cmd[0] = 0x01;
     cmd[1] = 18;
-    cmd[2] = PRANGE_CMD_SETWORKMODE;
-    cmd[3] = PRANGE_BROADCAST;
+    cmd[2] = 0x21;
+    cmd[3] = 0x22;
     cmd[4] = 0x56;
     cmd[5] = 0x96;
     cmd[6] = 0xFF;
@@ -125,6 +125,7 @@ int main()
         std::cout << "Error connect to port: " << std::endl;
     }
 
+    /*
     for (size_t i = 0; i < 25; i++)
     {
 
@@ -160,7 +161,10 @@ int main()
 
         std::cout << std::endl;
     }
+    */
 
-
+    
+    std::cout << "T0 = " << prange.reqTempDs18b20(0) << std::endl;
+    std::cout << "T1 = " << prange.reqTempDs18b20(1) << std::endl;
     return 0;
 }
