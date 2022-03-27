@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
+include(FetchContent)
+
 project(avr)
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Build type")
@@ -45,7 +47,18 @@ find_package(Qt6
     REQUIRED
 )
 
+FetchContent_Declare(
+  fftw
+  URL      http://www.fftw.org/fftw-3.3.10.tar.gz
+  URL_HASH MD5=8ccbf6a5ea78a16dbc3e1306e234cc5c
+)
+
+FetchContent_MakeAvailable(fftw)
+
+
 add_executable(SerialPort src/main.cpp)
+add_dependencies(SerialPort fftw3)  
+
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SerialPort)
 
 target_compile_definitions(SerialPort PRIVATE 
@@ -70,22 +83,25 @@ target_sources(SerialPort PRIVATE
 get_target_property(SerialPort_SOURCES SerialPort SOURCES)
 source_group("Source" FILES ${SerialPort_SOURCES})
 
+target_include_directories(SerialPort PRIVATE               # добавление директорий с библиотеками в проект
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${fftw_SOURCE_DIR}/api)
+
 target_link_libraries(SerialPort PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::PrintSupport
     Qt6::Widgets
+    fftw3
 )
+
+
 
 if(WIN32)
     add_custom_command(
         TARGET SerialPort POST_BUILD                     
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:Qt6::Core>
-            $<TARGET_FILE:Qt6::Gui>
-            $<TARGET_FILE:Qt6::PrintSupport>
-            $<TARGET_FILE:Qt6::Widgets>
-            $<TARGET_FILE_DIR:SerialPort>
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:SerialPort> $<TARGET_FILE_DIR:SerialPort>
+        COMMAND_EXPAND_LISTS
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${QT_ROOT}/plugins/platforms
             $<TARGET_FILE_DIR:SerialPort>/platforms

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "qprange.h"
 #include <QString>
+#include <fftw3.h>
 
 int test_min_length(QPRangeDevice& prange)
 {
@@ -163,6 +164,17 @@ int main()
     }
     */
 
+    const uint8_t N = 8;
+
+    fftw_complex in[N], out[N];
+    fftw_plan p;
+
+    p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_execute(p); 
+
+    fftw_destroy_plan(p);
+    
+    
     
     std::cout << "T0 = " << prange.reqTempDs18b20(0) << std::endl;
     std::cout << "T1 = " << prange.reqTempDs18b20(1) << std::endl;
