@@ -12,6 +12,11 @@
 #define REQ_SEACH_DS18B20 0x20
 #define ANS_SEACH_DS18B20 0x21
 
+#define REQ_ADC_BUFFER 0x22
+#define ANS_ADC_BUFFER 0x23
+
+
+
 class QPRangeDevice: public QObject
 {
     Q_OBJECT
@@ -22,8 +27,6 @@ protected:
     unsigned int FTimeout;
 
     unsigned short makeCRC16(unsigned char * data, unsigned short len, bool check = false) const;
-    //int sendData(void * data, int length = -1);
-    //int recvData(void * data, int length);
 
     int extendedSendRecvData(unsigned char *src, int src_len, unsigned char *dst, int dst_len, uint32_t timeout);
 
@@ -31,18 +34,20 @@ public:
     
     int sendData(void* data, int length = -1);
     int recvData(void* data, int length);
+    
     explicit QPRangeDevice(QObject *parent = 0);
     ~QPRangeDevice();
 
-    bool isActive() const 
-    { 
-        if(dev) 
-            return dev->isActive();
-    }
+    bool isActive() const { if(dev) return dev->isActive();}
 
     void setTimeout(unsigned int to);
 
     double reqTempDs18b20(uint8_t nubmer_ds18b20);
+    
+    int reqAdcBuffer128(int16_t* buffer);
+
+    double seachMaxFreq(int16_t* buffer, uint8_t buffer_len);
+
 
 signals:
     void activated();

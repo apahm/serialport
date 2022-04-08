@@ -1,5 +1,9 @@
 #include "qprange.h"
 #include <iostream>
+#include <fftw3.h>
+#include <algorithm>
+#include <vector>
+#include <cmath>
 
 QPRangeDevice::QPRangeDevice(QObject *parent) : QObject(parent)
 {
@@ -235,6 +239,7 @@ bool QPRangeDevice::deactivate()
 
 double QPRangeDevice::reqTempDs18b20(uint8_t nubmer_ds18b20)
 {
+
     uint32_t timeout = 1000; // 1000ms
 
     double tempOneDs18b20 = 0.0;
@@ -273,6 +278,88 @@ double QPRangeDevice::reqTempDs18b20(uint8_t nubmer_ds18b20)
     }
 
     return -1;
+}
+
+int QPRangeDevice::reqAdcBuffer128(int16_t* buffer)
+{
+    if (buffer == nullptr)
+        return -2;
+    
+    uint32_t timeout = 1000; // 1000ms
+
+    const unsigned char cnt_out = 6;
+    const unsigned char cnt_in = 261;  // 256 + 5
+
+    unsigned char cmd[cnt_out];
+    unsigned char ans[cnt_in];
+
+    cmd[0] = 0x01;
+    cmd[1] = cnt_out;
+    cmd[2] = REQ_ADC_BUFFER;
+    cmd[3] = 128; // Numbers of sample
+
+    if (extendedSendRecvData(cmd, -1, ans, cnt_in, timeout) > 0) {
+        // Save data?
+        // Receive ok?
+
+        if (ans[2] == ANS_ADC_BUFFER)
+        {
+            memcpy(buffer, &ans[3], 256);
+            return 0;
+        }
+    }
+
+    return -1;
+}
+
+double QPRangeDevice::seachMaxFreq(int16_t* buffer, uint8_t buffer_len)
+{
+    
+    if (buffer_len == 0)
+        return -1;
+    if (buffer == nullptr)
+        return -2;
+
+    fftw_complex* in = new fftw_complex[buffer_len]; 
+    fftw_complex* out = new fftw_complex[buffer_len];
+
+    if (in == nullptr)
+        return -2;
+    if (out == nullptr)
+        return -2;
+
+    fftw_plan p;
+
+    for (size_t i = 0; i < buffer_len; i++)
+    {
+        in[i][0] = (double)buffer[i];
+        in[i][1] = 0;
+    }
+
+    p = fftw_plan_dft_1d(buffer_len, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+    fftw_execute(p);
+
+    std::vector<double> mag;
+
+    for (size_t i = 0; i < buffer_len; i++)
+    {
+        mag.push_back(
+            std::sqrt(
+                std::pow(out[i][0],2) + std::pow(out[i][1],2)
+            )
+        );
+    }
+
+    std::vector<double>::iterator result;
+
+    result = std::max_element(mag.begin(), mag.end());
+
+    fftw_destroy_plan(p);
+
+    delete[] in;
+    delete[] out;
+
+    return (9600.0 / (double)buffer_len) * (double)std::distance(mag.begin(), result);
 }
 
 

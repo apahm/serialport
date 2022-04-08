@@ -1,13 +1,8 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.21)
 
 include(FetchContent)
 
 project(avr)
-
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Build type")
-
-set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type")
-set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release)
 
 # Organisation of Visual Studio solution
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -60,14 +55,6 @@ add_executable(SerialPort src/main.cpp)
 add_dependencies(SerialPort fftw3)  
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SerialPort)
-
-target_compile_definitions(SerialPort PRIVATE 
-    _USE_MATH_DEFINES
-    _UNICODE
-    _NOMINMAX
-    NO_OPTIX
-    $<$<CONFIG:Debug>:_DEBUG>
-)
 
 target_sources(SerialPort PRIVATE
     src/BaseDevice.cpp
