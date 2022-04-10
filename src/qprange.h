@@ -42,7 +42,7 @@ public:
 
     void setTimeout(unsigned int to);
 
-    double reqTempDs18b20(uint8_t nubmer_ds18b20);
+    int reqTempDs18b20(std::vector<double>& temp);
     
     int reqAdcBuffer128(int16_t* buffer);
 

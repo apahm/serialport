@@ -237,10 +237,9 @@ bool QPRangeDevice::deactivate()
  *   nubmer_ds18b20 = 1 - для второго датчика
 */
 
-double QPRangeDevice::reqTempDs18b20(uint8_t nubmer_ds18b20)
+int QPRangeDevice::reqTempDs18b20(std::vector<double> &temp)
 {
-
-    uint32_t timeout = 1000; // 1000ms
+    uint32_t timeout = 3000; // 1000ms
 
     double tempOneDs18b20 = 0.0;
     double tempTwoDs18b20 = 0.0;
@@ -253,8 +252,10 @@ double QPRangeDevice::reqTempDs18b20(uint8_t nubmer_ds18b20)
     cmd[0] = 0x01;
     cmd[1] = cnt_out;
     cmd[2] = REQ_TEMP_DS18B20;
+    
+    int ret = extendedSendRecvData(cmd, -1, ans, cnt_in, timeout);
 
-    if(extendedSendRecvData(cmd, -1, ans, cnt_in, timeout) > 0) {
+    if(ret > 0) {
         // Save data?
         // Receive ok?
         
@@ -270,14 +271,13 @@ double QPRangeDevice::reqTempDs18b20(uint8_t nubmer_ds18b20)
             tempTwoDs18b20 = ((ans[5] << 8) + ans[6]) * 0.0625;
             //std::cout << "T1 = " << tempTwoDs18b20 << std::endl;
             
-            if (!nubmer_ds18b20)
-                return tempOneDs18b20;
-            else
-                return tempTwoDs18b20;
+            temp.push_back(tempOneDs18b20);
+            temp.push_back(tempTwoDs18b20);
+            return 0;
         }
     }
-
-    return -1;
+    
+    return ret;
 }
 
 int QPRangeDevice::reqAdcBuffer128(int16_t* buffer)

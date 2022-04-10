@@ -23,10 +23,17 @@ int main()
     } else {
         std::cout << "Error connect to port: " << std::endl;
     }
-    
-    std::cout << "T0 = " << prange.reqTempDs18b20(0) << std::endl;
-    std::cout << "T1 = " << prange.reqTempDs18b20(1) << std::endl;
+    std::vector<double> temp;
+    int ret = prange.reqTempDs18b20(temp);
 
+    if (ret == 0)
+    {
+        std::cout << "T0 = " << temp.at(0) << std::endl;
+        std::cout << "T1 = " << temp.at(1) << std::endl;
+    }
+
+
+    /*
     uint16_t buffer_len = 256;
     std::vector<int16_t> v(buffer_len,0);
 
@@ -41,7 +48,7 @@ int main()
             sample << v.at(i) << std::endl;
         }
     }
-
+    */
     //double freq = prange.seachMaxFreq(v.data(), buffer_len);
 
     //std::cout << freq << std::endl;
