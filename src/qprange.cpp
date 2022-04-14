@@ -280,6 +280,150 @@ int QPRangeDevice::reqTempDs18b20(std::vector<double> &temp)
     return ret;
 }
 
+int QPRangeDevice::reqInitDs18b20()
+{
+    uint32_t timeout = 200; 
+
+    const unsigned char cnt_out = 5;
+    const unsigned char cnt_in = 6;
+    unsigned char cmd[cnt_out];
+    unsigned char ans[cnt_in];
+
+    cmd[0] = 0x01;
+    cmd[1] = cnt_out;
+    cmd[2] = REQ_INIT_DS18B20;
+
+    int ret = extendedSendRecvData(cmd, -1, ans, cnt_in, timeout);
+
+    if (ret > 0) {
+        // Save data?
+        // Receive ok?
+
+        if (ans[2] == ANS_INIT_DS18B20)
+        {
+            return ans[3];
+        }
+    }
+
+    return ret;
+}
+
+int QPRangeDevice::reqInitAdcSound()
+{
+    uint32_t timeout = 200;
+
+    const unsigned char cnt_out = 5;
+    const unsigned char cnt_in = 6;
+    unsigned char cmd[cnt_out];
+    unsigned char ans[cnt_in];
+
+    cmd[0] = 0x01;
+    cmd[1] = cnt_out;
+    cmd[2] = REQ_INIT_ADC_SOUND;
+
+    int ret = extendedSendRecvData(cmd, -1, ans, cnt_in, timeout);
+
+    if (ret > 0) {
+        // Save data?
+        // Receive ok?
+
+        if (ans[2] == ANS_INIT_ADC_SOUND)
+        {
+            return ans[3];
+        }
+    }
+
+    return ret;
+}
+
+int QPRangeDevice::reqInitAdcLight()
+{
+    uint32_t timeout = 200;
+
+    const unsigned char cnt_out = 5;
+    const unsigned char cnt_in = 6;
+    unsigned char cmd[cnt_out];
+    unsigned char ans[cnt_in];
+
+    cmd[0] = 0x01;
+    cmd[1] = cnt_out;
+    cmd[2] = REQ_INIT_ADC_LIGHT;
+
+    int ret = extendedSendRecvData(cmd, -1, ans, cnt_in, timeout);
+
+    if (ret > 0) {
+        // Save data?
+        // Receive ok?
+
+        if (ans[2] == ANS_INIT_ADC_LIGHT)
+        {
+            return ans[3];
+        }
+    }
+
+    return ret;
+}
+
+int QPRangeDevice::reqInitHX711()
+{
+    uint32_t timeout = 200;
+
+    const unsigned char cnt_out = 5;
+    const unsigned char cnt_in = 6;
+    unsigned char cmd[cnt_out];
+    unsigned char ans[cnt_in];
+
+    cmd[0] = 0x01;
+    cmd[1] = cnt_out;
+    cmd[2] = REQ_INIT_HX711;
+
+    int ret = extendedSendRecvData(cmd, -1, ans, cnt_in, timeout);
+
+    if (ret > 0) {
+        // Save data?
+        // Receive ok?
+
+        if (ans[2] == ANS_INIT_HX711)
+        {
+            return ans[3];
+        }
+    }
+
+    return ret;
+}
+
+int QPRangeDevice::reqWeightHX711(uint32_t &weight)
+{
+    uint32_t timeout = 1000;
+
+    const unsigned char cnt_out = 5;
+    const unsigned char cnt_in = 9;
+    unsigned char cmd[cnt_out];
+    unsigned char ans[cnt_in];
+
+    cmd[0] = 0x01;
+    cmd[1] = cnt_out;
+    cmd[2] = REQ_WEIGHT_HX711;
+
+    int ret = extendedSendRecvData(cmd, -1, ans, cnt_in, timeout);
+
+    if (ret > 0) {
+        // Save data?
+        // Receive ok?
+
+        if (ans[2] == ANS_WEIGHT_HX711)
+        {
+            weight = ans[3] | 
+                    (ans[4] << 8) | 
+                    (ans[5] << 16) | 
+                    (ans[6] << 24);
+            return 0;
+        }
+    }
+
+    return ret;
+}
+
 int QPRangeDevice::reqAdcBuffer128(int16_t* buffer)
 {
     if (buffer == nullptr)

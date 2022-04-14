@@ -23,15 +23,45 @@ int main()
     } else {
         std::cout << "Error connect to port: " << std::endl;
     }
+    
     std::vector<double> temp;
-    int ret = prange.reqTempDs18b20(temp);
+    
+    int ret = prange.reqInitDs18b20();
+    if (ret != 2)
+    {
+        return -1;
+    }
 
+    int ret = prange.reqTempDs18b20(temp);
     if (ret == 0)
     {
         std::cout << "T0 = " << temp.at(0) << std::endl;
         std::cout << "T1 = " << temp.at(1) << std::endl;
     }
 
+    /*
+    int ret = prange.reqInitAdcSound();
+    if (ret != 1)
+    {
+        return -1;
+    }
+    */
+    
+    /*
+    int ret = prange.reqInitHX711();
+    if (ret != 1)
+    {
+        return -1;
+    }
+    */
+
+    /*
+    int ret = prange.reqInitAdcLight();
+    if (ret != 1)
+    {
+        return -1;
+    }
+    */
 
     /*
     uint16_t buffer_len = 256;
