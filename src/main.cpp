@@ -22,23 +22,25 @@ int main()
         std::cout << "Connect to port: " << std::endl;
     } else {
         std::cout << "Error connect to port: " << std::endl;
+        return -1;
     }
-    
+    int ret = 0;
+    /*
     std::vector<double> temp;
     
-    int ret = prange.reqInitDs18b20();
+    ret = prange.reqInitDs18b20();
     if (ret != 2)
     {
         return -1;
     }
 
-    int ret = prange.reqTempDs18b20(temp);
+    ret = prange.reqTempDs18b20(temp);
     if (ret == 0)
     {
         std::cout << "T0 = " << temp.at(0) << std::endl;
         std::cout << "T1 = " << temp.at(1) << std::endl;
     }
-
+    */
     /*
     int ret = prange.reqInitAdcSound();
     if (ret != 1)
@@ -46,14 +48,23 @@ int main()
         return -1;
     }
     */
-    
     /*
-    int ret = prange.reqInitHX711();
+    
+    ret = prange.reqInitHX711();
     if (ret != 1)
     {
         return -1;
     }
+    else 
+        std::cout << "HX711 init succesfully" << std::endl;
     */
+
+    uint32_t weight = 0;
+
+    ret = prange.reqWeightHX711(weight);
+
+    std::cout <<  weight << std::endl;
+    //weight = weight * 0.035274;
 
     /*
     int ret = prange.reqInitAdcLight();

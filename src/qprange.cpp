@@ -366,7 +366,7 @@ int QPRangeDevice::reqInitAdcLight()
 
 int QPRangeDevice::reqInitHX711()
 {
-    uint32_t timeout = 200;
+    uint32_t timeout = 1000;
 
     const unsigned char cnt_out = 5;
     const unsigned char cnt_in = 6;
@@ -392,9 +392,9 @@ int QPRangeDevice::reqInitHX711()
     return ret;
 }
 
-int QPRangeDevice::reqWeightHX711(uint32_t &weight)
+int QPRangeDevice::reqWeightHX711(uint32_t& weight)
 {
-    uint32_t timeout = 1000;
+    uint32_t timeout = 2000;
 
     const unsigned char cnt_out = 5;
     const unsigned char cnt_in = 9;
